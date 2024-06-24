@@ -93,22 +93,38 @@ CREATE TABLE IF NOT EXISTS `order` (
   `total` decimal(12,2) DEFAULT NULL,
   `customer_id` int(11) NOT NULL,
   `order_date` datetime NOT NULL,
+  `status_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_order_customer` (`customer_id`),
-  CONSTRAINT `FK_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `FK_order_order_status` (`status_id`),
+  CONSTRAINT `FK_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_order_order_status` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
-INSERT INTO `order` (`id`, `total`, `customer_id`, `order_date`) VALUES
-	(1, 0.00, 1, '2024-04-09 13:08:22'),
-	(2, 0.00, 2, '2024-05-18 17:18:22'),
-	(3, 0.00, 8, '2024-07-31 21:28:22'),
-	(4, 0.00, 4, '2024-04-15 01:38:22'),
-	(5, 0.00, 9, '2024-11-11 05:09:22'),
-	(6, 0.00, 10, '2024-01-24 09:19:22'),
-	(7, 0.00, 5, '2024-03-06 10:29:22'),
-	(8, 0.00, 6, '2024-05-20 13:39:22'),
-	(9, 0.00, 7, '2024-07-24 16:00:22'),
-	(10, 0.00, 3, '2024-09-19 19:10:22');
+INSERT INTO `order` (`id`, `total`, `customer_id`, `order_date`, `status_id`) VALUES
+	(1, 0.00, 1, '2024-04-09 13:08:22', 3),
+	(2, 0.00, 2, '2024-05-18 17:18:22', 4),
+	(3, 0.00, 8, '2024-07-31 21:28:22', 2),
+	(4, 0.00, 4, '2024-04-15 01:38:22', 3),
+	(5, 0.00, 9, '2024-11-11 05:09:22', 1),
+	(6, 0.00, 10, '2024-01-24 09:19:22', 4),
+	(7, 0.00, 5, '2024-03-06 10:29:22', 2),
+	(8, 0.00, 6, '2024-05-20 13:39:22', 3),
+	(9, 0.00, 7, '2024-07-24 16:00:22', 2),
+	(10, 0.00, 3, '2024-09-19 19:10:22', 4);
+
+CREATE TABLE IF NOT EXISTS `order_status` (
+  `id` int(11) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+INSERT INTO `order_status` (`id`, `name`) VALUES
+	(1, 'On Stock'),
+	(2, 'Packing'),
+	(3, 'On Shipping'),
+	(4, 'Delivered'),
+	(5, 'Returned');
 
 CREATE TABLE IF NOT EXISTS `product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
