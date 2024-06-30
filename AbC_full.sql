@@ -86,7 +86,11 @@ INSERT INTO `items_by_order` (`order_id`, `product_id`, `quatity`, `unit_price`)
 	(7, 3, 2, 1300.000000),
 	(8, 5, 2, 800.000000),
 	(9, 7, 3, 25.000000),
-	(10, 7, 1, 25.000000);
+	(10, 7, 1, 25.000000),
+	(11, 7, 3, 15.000000),
+	(11, 4, 2, 150.000000),
+	(12, 2, 1, 1300.000000),
+	(12, 3, 1, 980.000000);
 
 CREATE TABLE IF NOT EXISTS `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -99,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   KEY `FK_order_order_status` (`status_id`),
   CONSTRAINT `FK_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_order_order_status` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 INSERT INTO `order` (`id`, `total`, `customer_id`, `order_date`, `status_id`) VALUES
 	(1, 0.00, 1, '2024-04-09 13:08:22', 3),
@@ -111,7 +115,9 @@ INSERT INTO `order` (`id`, `total`, `customer_id`, `order_date`, `status_id`) VA
 	(7, 0.00, 5, '2024-03-06 10:29:22', 2),
 	(8, 0.00, 6, '2024-05-20 13:39:22', 3),
 	(9, 0.00, 7, '2024-07-24 16:00:22', 2),
-	(10, 0.00, 3, '2024-09-19 19:10:22', 4);
+	(10, 0.00, 3, '2024-09-19 19:10:22', 4),
+	(11, 0.00, 9, '2024-06-30 17:10:37', 1),
+	(12, 0.00, 12, '2024-06-30 17:12:15', 1);
 
 CREATE TABLE IF NOT EXISTS `order_status` (
   `id` int(11) NOT NULL,
@@ -226,6 +232,10 @@ CREATE TABLE IF NOT EXISTS `returned_item` (
   CONSTRAINT `FK__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
+INSERT INTO `returned_item` (`order_id`, `product_id`, `quantity`, `reason`) VALUES
+	(11, 7, 1, 'It has a broken leg'),
+	(11, 4, 1, 'the jars lid doesn\'t fit.'),
+	(12, 3, 1, 'It was purchased by error.');
 
 CREATE TABLE IF NOT EXISTS `supplier` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
