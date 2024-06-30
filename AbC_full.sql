@@ -65,32 +65,34 @@ INSERT INTO `customer` (`id`, `first_name`, `last_name`, `email`, `address`, `ph
 	(13, 'Hi', 'Doding', 'hdodingc@accuweather.com', '3603 Eliot Hill', '781-508-9280', '2023-07-01 20:42:08', 'vZ1&rKk)');
 
 CREATE TABLE IF NOT EXISTS `items_by_order` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) DEFAULT NULL,
   `product_id` int(11) DEFAULT NULL,
   `quatity` int(11) DEFAULT NULL,
   `unit_price` decimal(10,6) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
   KEY `FK_items_by_order_order` (`order_id`),
   KEY `FK_items_by_order_product` (`product_id`),
   CONSTRAINT `FK_items_by_order_order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_items_by_order_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
-INSERT INTO `items_by_order` (`order_id`, `product_id`, `quatity`, `unit_price`) VALUES
-	(1, 1, 2, 10.000000),
-	(1, 10, 1, 20.000000),
-	(2, 4, 1, 200.000000),
-	(3, 8, 2, 15.000000),
-	(4, 9, 3, 6.000000),
-	(5, 2, 1, 1500.000000),
-	(6, 6, 5, 800.000000),
-	(7, 3, 2, 1300.000000),
-	(8, 5, 2, 800.000000),
-	(9, 7, 3, 25.000000),
-	(10, 7, 1, 25.000000),
-	(11, 7, 3, 15.000000),
-	(11, 4, 2, 150.000000),
-	(12, 2, 1, 1300.000000),
-	(12, 3, 1, 980.000000);
+INSERT INTO `items_by_order` (`ID`, `order_id`, `product_id`, `quatity`, `unit_price`) VALUES
+	(1, 1, 1, 2, 10.000000),
+	(2, 1, 10, 1, 20.000000),
+	(3, 2, 4, 1, 200.000000),
+	(4, 3, 8, 2, 15.000000),
+	(5, 4, 9, 3, 6.000000),
+	(6, 5, 2, 1, 1500.000000),
+	(7, 6, 6, 5, 800.000000),
+	(8, 7, 3, 2, 1300.000000),
+	(9, 8, 5, 2, 800.000000),
+	(10, 9, 7, 3, 25.000000),
+	(11, 10, 7, 1, 25.000000),
+	(12, 11, 7, 3, 15.000000),
+	(13, 11, 4, 2, 150.000000),
+	(14, 12, 2, 1, 1300.000000),
+	(15, 12, 3, 1, 980.000000);
 
 CREATE TABLE IF NOT EXISTS `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -116,8 +118,8 @@ INSERT INTO `order` (`id`, `total`, `customer_id`, `order_date`, `status_id`) VA
 	(8, 0.00, 6, '2024-05-20 13:39:22', 3),
 	(9, 0.00, 7, '2024-07-24 16:00:22', 2),
 	(10, 0.00, 3, '2024-09-19 19:10:22', 4),
-	(11, 0.00, 9, '2024-06-30 17:10:37', 1),
-	(12, 0.00, 12, '2024-06-30 17:12:15', 1);
+	(11, 0.00, 9, '2024-06-29 17:10:37', 1),
+	(12, 0.00, 12, '2024-06-29 17:12:15', 1);
 
 CREATE TABLE IF NOT EXISTS `order_status` (
   `id` int(11) NOT NULL,
@@ -222,20 +224,20 @@ INSERT INTO `rating` (`id`, `name`, `value`) VALUES
 	(5, 'Excellent', 5);
 
 CREATE TABLE IF NOT EXISTS `returned_item` (
-  `order_id` int(11) DEFAULT NULL,
-  `product_id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_by_order_id` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
   `reason` varchar(256) DEFAULT NULL,
-  KEY `FK__order` (`order_id`),
-  KEY `FK__product` (`product_id`),
-  CONSTRAINT `FK__order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_returned_item_items_by_order` (`item_by_order_id`),
+  CONSTRAINT `FK_returned_item_items_by_order` FOREIGN KEY (`item_by_order_id`) REFERENCES `items_by_order` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
-INSERT INTO `returned_item` (`order_id`, `product_id`, `quantity`, `reason`) VALUES
-	(11, 7, 1, 'It has a broken leg'),
-	(11, 4, 1, 'the jars lid doesn\'t fit.'),
-	(12, 3, 1, 'It was purchased by error.');
+INSERT INTO `returned_item` (`id`, `item_by_order_id`, `quantity`, `reason`, `date`) VALUES
+	(1, 12, 1, 'It has a broken leg', '2024-06-30 22:38:57'),
+	(2, 14, 1, 'the jars lid doesn\'t fit.', '2024-06-30 22:40:24'),
+	(3, 15, 1, 'It was purchased by error.', '2024-06-30 22:40:26');
 
 CREATE TABLE IF NOT EXISTS `supplier` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
