@@ -46,7 +46,9 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `phone_number` varchar(20) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   `password` varchar(60) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `phone_number` (`phone_number`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 INSERT INTO `customer` (`id`, `first_name`, `last_name`, `email`, `address`, `phone_number`, `last_login`, `password`) VALUES
@@ -104,6 +106,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   PRIMARY KEY (`id`),
   KEY `FK_order_customer` (`customer_id`),
   KEY `FK_order_order_status` (`status_id`),
+  KEY `order_date` (`order_date`),
   CONSTRAINT `FK_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_order_order_status` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
