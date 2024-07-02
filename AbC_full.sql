@@ -92,7 +92,8 @@ INSERT INTO `items_by_order` (`ID`, `order_id`, `product_id`, `quatity`, `unit_p
 	(12, 11, 7, 3, 15.000000),
 	(13, 11, 4, 2, 150.000000),
 	(14, 12, 2, 1, 1300.000000),
-	(15, 12, 3, 1, 980.000000);
+	(15, 12, 3, 1, 980.000000),
+	(16, 11, 10, 1, 35.000000);
 
 CREATE TABLE IF NOT EXISTS `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
