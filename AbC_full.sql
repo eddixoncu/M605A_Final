@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `items_by_order` (
   KEY `FK_items_by_order_product` (`product_id`),
   CONSTRAINT `FK_items_by_order_order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_items_by_order_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 INSERT INTO `items_by_order` (`ID`, `order_id`, `product_id`, `quatity`, `unit_price`) VALUES
 	(1, 1, 1, 2, 10.000000),
@@ -260,6 +260,45 @@ INSERT INTO `supplier` (`id`, `name`, `email`, `phone`, `address`) VALUES
 	(8, 'Bayer', 'verkauf@bayer.com', '06861 67 96 20 ', 'Apt. 761 Stefan-Zweig-Str. 78c, Klein Mattisland, HE 83370'),
 	(9, '14-8000', 'store@148000.com', '030 76 79 07 ', 'Apt. 504 Ahornweg 126, Groß Elina, SN 72618'),
 	(10, 'Apple', 'sales@apple.com', '08807 19 30 39 ', 'Zimmer 916 Hans-Arp-Str. 74b, Nord Jasmina, NW 99273');
+
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateOrderTotalPrice`(
+	IN `order_id` INT
+)
+BEGIN
+	UPDATE `order` o
+	SET total = (
+		SELECT SUM(quatity * unit_price)
+		FROM items_by_order ibo
+		WHERE ibo.order_id =order_id
+	)
+	WHERE o.id = order_id;
+END//
+DELIMITER ;
+
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` TRIGGER `items_by_order_after_delete` AFTER DELETE ON `items_by_order` FOR EACH ROW BEGIN
+	CALL UpdateOrderTotalPrice(OLD.order_id);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` TRIGGER `items_by_order_after_insert` AFTER INSERT ON `items_by_order` FOR EACH ROW BEGIN
+	CALL UpdateOrderTotalPrice(NEW.order_id);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` TRIGGER `items_by_order_after_update` AFTER UPDATE ON `items_by_order` FOR EACH ROW BEGIN
+	CALL UpdateOrderTotalPrice(NEW.order_id);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
